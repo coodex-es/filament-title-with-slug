@@ -4,11 +4,13 @@ namespace Camya\Filament\Forms\Components;
 
 use Camya\Filament\Forms\Fields\SlugInput;
 use Closure;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -51,6 +53,14 @@ class TitleWithSlugInput
         Closure $slugSlugifier = null,
         string|Closure|null $slugRuleRegex = '/^[a-z0-9\-\_]*$/',
         string|Closure $slugLabelPostfix = null,
+
+        // Hints
+        string|Htmlable|Closure |null $hint = null,
+        Action|Closure|null $hintAction = null,
+        array $hintActions = [],
+        string|array|Closure|null $hintColor = null,
+        string|Closure|null $hintIcon = null,
+        string|Closure|null $hintIconTooltip = null,
     ): Group {
         $fieldTitle = $fieldTitle ?? config('filament-title-with-slug.field_title');
         $fieldSlug = $fieldSlug ?? config('filament-title-with-slug.field_slug');
@@ -65,6 +75,10 @@ class TitleWithSlugInput
             ->rules($titleRules)
             ->extraInputAttributes($titleExtraInputAttributes ?? ['class' => 'text-xl font-semibold'])
             ->beforeStateDehydrated(fn (TextInput $component, $state) => $component->state(trim($state)))
+            ->hint($hint)
+            ->hintColor($hintColor)
+            ->hintIcon($hintIcon)
+            ->hintIconTooltip($hintIconTooltip)
             ->afterStateUpdated(
                 function (
                     $state,
@@ -93,6 +107,14 @@ class TitleWithSlugInput
                     }
                 }
             );
+        if ($hintAction) {
+            $textInput->hintAction($hintAction);
+        }
+        if (count($hintActions)) {
+            foreach($hintActions as $action) {
+                $textInput->hintAction($action);
+            }
+        }
 
         if (in_array('required', $titleRules, true)) {
             $textInput->required();
