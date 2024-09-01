@@ -19,43 +19,43 @@ class TitleWithSlugInput
     public static function make(
 
         // Model fields
-        string $fieldTitle = null,
-        string $fieldSlug = null,
+        ?string $fieldTitle = null,
+        ?string $fieldSlug = null,
 
         // Url
         string|Closure|null $urlPath = '/',
-        string|Closure $urlHost = null,
+        string|Closure|null $urlHost = null,
         bool $urlHostVisible = true,
         bool|Closure $urlVisitLinkVisible = true,
-        Closure|string $urlVisitLinkLabel = null,
-        Closure $urlVisitLinkRoute = null,
+        Closure|string|null $urlVisitLinkLabel = null,
+        ?Closure $urlVisitLinkRoute = null,
 
         // Title
-        string|Closure $titleLabel = null,
-        string $titlePlaceholder = null,
-        array|Closure $titleExtraInputAttributes = null,
+        string|Closure|null $titleLabel = null,
+        ?string $titlePlaceholder = null,
+        array|Closure|null $titleExtraInputAttributes = null,
         array $titleRules = [
             'required',
         ],
         array $titleRuleUniqueParameters = [],
         bool|Closure $titleIsReadonly = false,
         bool|Closure $titleAutofocus = true,
-        Closure $titleAfterStateUpdated = null,
+        ?Closure $titleAfterStateUpdated = null,
 
         // Slug
-        string $slugLabel = null,
+        ?string $slugLabel = null,
         array $slugRules = [
             'required',
         ],
         array $slugRuleUniqueParameters = [],
         bool|Closure $slugIsReadonly = false,
-        Closure $slugAfterStateUpdated = null,
-        Closure $slugSlugifier = null,
+        ?Closure $slugAfterStateUpdated = null,
+        ?Closure $slugSlugifier = null,
         string|Closure|null $slugRuleRegex = '/^[a-z0-9\-\_]*$/',
-        string|Closure $slugLabelPostfix = null,
+        string|Closure|null $slugLabelPostfix = null,
 
         // Hints
-        string|Htmlable|Closure |null $hint = null,
+        string|Htmlable|Closure|null $hint = null,
         Action|Closure|null $hintAction = null,
         array $hintActions = [],
         string|array|Closure|null $hintColor = null,
@@ -92,7 +92,7 @@ class TitleWithSlugInput
                     $fieldSlug,
                     $titleAfterStateUpdated,
                 ) {
-                    $slugAutoUpdateDisabled = $get($fieldSlug . '_slug_auto_update_disabled');
+                    $slugAutoUpdateDisabled = $get($fieldSlug.'_slug_auto_update_disabled');
 
                     if ($context === 'edit' && filled($record)) {
                         $slugAutoUpdateDisabled = true;
@@ -111,7 +111,7 @@ class TitleWithSlugInput
             $textInput->hintAction($hintAction);
         }
         if (count($hintActions)) {
-            foreach($hintActions as $action) {
+            foreach ($hintActions as $action) {
                 $textInput->hintAction($action);
             }
         }
@@ -181,7 +181,7 @@ class TitleWithSlugInput
 
                     $set($fieldSlug, self::slugify($slugSlugifier, $text));
 
-                    $set($fieldSlug . '_slug_auto_update_disabled', true);
+                    $set($fieldSlug.'_slug_auto_update_disabled', true);
 
                     if ($slugAfterStateUpdated) {
                         $component->evaluate($slugAfterStateUpdated);
@@ -198,7 +198,7 @@ class TitleWithSlugInput
             : $slugInput->unique(ignorable: fn (?Model $record) => $record);
 
         /** Input: "Slug Auto Update Disabled" (Hidden) */
-        $hiddenInputSlugAutoUpdateDisabled = Hidden::make($fieldSlug . '_slug_auto_update_disabled')
+        $hiddenInputSlugAutoUpdateDisabled = Hidden::make($fieldSlug.'_slug_auto_update_disabled')
             ->dehydrated(false);
 
         /** Group */
