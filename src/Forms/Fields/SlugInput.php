@@ -147,7 +147,11 @@ class SlugInput extends TextInput
 
     public function getRecordSlug(): ?string
     {
-        return $this->evaluate($this->recordSlug);
+        $output = $this->evaluate($this->recordSlug);
+        if (is_array($output)) {
+            return $output[$this->getLivewire()->activeLocale] ?? null;
+        }
+        return $output;
     }
 
     public function getRecordUrl(): ?string
